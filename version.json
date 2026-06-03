@@ -1,6 +1,6 @@
 {
-  "version": "1.6.0",
-  "download_url": "https://DEIN-SERVER/GPrint-Tool.exe",
-  "notes": "Zeigt die aktuelle Version und den Link zur neusten Version des GPrint-Tools.",
+  "version": "1.8.0",
+  "download_url": "https://github.com/98koellnertd-code/alphajet-tool/releases/download/v1.8.0/alphaJet-InterfaceTool.exe",
+  "notes": "Design Update, Anpassung Label- und Logo- Editor",
   "name": "K & B alphaJET - Servicetechniker Tool"
 }
