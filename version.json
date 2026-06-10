@@ -1,6 +1,6 @@
 {
-  "version": "1.8.0",
-  "download_url": "https://github.com/98koellnertd-code/alphajet-tool/releases/download/v1.8.0/alphaJet-InterfaceTool.exe",
-  "notes": "Design Update, Anpassung Label- und Logo- Editor",
-  "name": "K & B alphaJET - Servicetechniker Tool"
+  "version": "2.0.0",
+  "download_url": "https://github.com/98koellnertd-code/alphajet-tool/releases/download/v2.0.0/alphaJet-InterfaceTool.exe",
+  "name": "K & B alphaJET - Servicetechniker Tool",
+  "notes": ""
 }
