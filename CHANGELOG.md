@@ -6,12 +6,146 @@
 ********************************************************************************
 ********************************************************************************
 
+
 ################################################################################
-####################       -- neuste Version v1.8.0 --      ####################
+################################################################################
+################################################################################
+####################       -- neuste Version v2.0.0 --      ####################
+################################################################################
+################################################################################
 ################################################################################
 
+###LATEST CHANGES###
+
+### FTP 
+-- Drucker haben weder nlst noch mlds ftp-list-formate.. 
+-- normalerweise gibt es standardformate für ftp. also erhält man einfach eine stumpfe Liste.
+-- wenn kein format erkannt wird, man die datei sich anguckt, welcher type, größe, name.. und das in spalten anzeigt und natürlich verarbeiten/visualisiert.
+-- Speichern als SVG entfernt. unnötig.
+
+### MLG 
+-- Mlg Logos werden jetzt korrekt decodiert und  beim speichern korrekt codiert (kba (cgrafic) style)
+
+### LOCAL
+-- cancel wird nun richtig ausgeführt, auch beim theme wechsel (löschen aller temp. files)
+
+### LABELS / Configs
+-- neue Befehle hinzugefügt
+
+################################################################################
+
+######### -- v2.0.0 -- #########
+
+### Updates
+-- Update über GIT eingebunden und version.json
+
+### Design 
+-- Es kann nun zwischen Hell und Dunkel gewählt werden (forest-dark & forest-light)
+-- eigenes Stylesheet erstellt 
+-- Button Anpassungen
+-- Schriftanpassungen
+-- insgesamt alles etwas größer &  kontrastreicher und damit übersichtlicher gestaltet
+-- kompletter Design-Quellcode in utils.py ausgelagert 
+
+#### Code Änderungen, Ineffizienzen, Exceptions und Performance + 
+-- _build_props_area → nur noch Header-Label + _props_built = False. Canvas, Scrollbar, Inner-Frame werden nicht mehr beim Start gebaut.
+-- _ensure_props_built() → neuer Helfer, baut das Panel beim ersten Aufruf, danach no-op.
+-- _show_props(obj) → ruft _ensure_props_built() als erstes — das ist der einzige Trigger.
+-- _show_empty_props() → if not self._props_built: return — solange kein Objekt je angeklickt wurde, gibt es nichts zu leeren.
+-- Toggle-Button Auto-Ping: AUS/AN vollständig entfernt
+-- Startet automatisch 3s nach App-Start, läuft für immer
+-- _printer_ping_id wird gespeichert → after_cancel beim Schließen der App via neuem _on_close-Handler (löst gleichzeitig den fehlenden WM_DELETE_WINDOW-Bug aus dem Code-Review)
+-- Status: Verbunden (grün) / Offline (rot)
+-- FTP-Keepalive (ftp.py)
+-- 10s Intervall statt 30s
+-- _ftp_keepalive_id gespeichert → bei "Trennen" und bei _ftp_on_kicked sofort gecancelt
+-- Verhindert damit die doppelte-Loop-Akkumulation beim schnellen Trennen/Verbinden
+-- Status bei Verbindungsverlust jetzt: ● Offline statt ● Nicht verbunden
+-- Salesforce-Ping (az_reisekosten.py)
+-- Neuer _sf_ping_loop() startet 5s nach Tab-Öffnung, läuft dann dauerhaft
+-- Solange kein Token: idled (1 µs Check + reschedule)
+-- Nach Login: GET /services/data/ – leichtester möglicher Endpoint (nur API-Versionsliste, ~200 Bytes)
+-- 401/403 → Token wird gecleart, Dot rot, Text "Session abgelaufen"
+-- Netzwerkfehler / 5xx → Dot gelb, Text "Verbindungsproblem" (Token bleibt erhalten, evtl. nur kurze Störung)
+-- _sf_display_name wird nach Login gespeichert und vom Ping-Loop wiederverwendet
+-- HTTPS-Enforcement	_update_check prüft url.startswith("https://") → Warnung + Abbruch; _update_prompt prüft dl_url ebenfalls
+-- shell=True → os.startfile	Kein Subprozess mehr für ncpa.cpl
+-- FTP-Tab Fehlerbehandlung	Jeder Sub-Build (Monitor, LabelEditor, LogoEditor) einzeln in try/except; bei FTPTab-Fehler: Fehlermeldung im Tab statt leerem Frame
+-- MockFTPServer.start() bindet den Socket synchron – kein Warten nötig. Externer Server wird direkt als verfügbar markiert (ohne falsches _running=True)
+-- Kein gefaktes MockFTPServer-Objekt mehr wenn Port schon belegt – nur Status-Update und return True
+-- Doppeltes socket.close()	relay() schließt nur src; signalisiert dst via shutdown(SHUT_WR) → jeder Socket wird exakt einmal geschlossen
+-- _calc_hours Duplikation	Delegiert jetzt an _calc_entry_hours – eine Implementierung, kein kopierter Code
+-- 53× JSON im Main-Thread	File-I/O komplett in _do_stundenblatt (Hintergrundthread) verschoben; Main-Thread übergibt nur dict(self._day_data) als Snapshot
+-- kw_data.pop()	→ kw_data.get() – kein Seiteneffekt auf übergebenes Dict
+-- StringVar GC-anfällig	sv wird in self._day_rows[ds]["sv"] gespeichert → starke Referenz, sicher gegen Garbage Collector
+-- Thread-Safety self._ftp	threading.Lock() schützt alle Schreibzugriffe (connect/disconnect); Keepalive liest atomisch in lokale Variable ftp
+-- Tiefenbegrenzung	_ftp_download_recursive(_depth=0) – Abbruch bei _depth > 20
+-- _ftp_mkd_safe	Prüft jetzt Codes 550, 521, 553 + "exists" im Text → kompatibel mit vsftpd, PureFTPd, ProFTPd
+-- utils.py	save_json hat kein Exception-Handling – Dateisystem voll → unkontrollierter Crash
+-- utils.py	LABEL_EXTS enthält .TXT, .Txt etc. redundant – has_ext normiert schon alles
+-- label_editor.py	BASE_DIR wird lokal neu berechnet statt from utils import BASE_DIR
+-- label_editor.py	tag_bind in _redraw akkumuliert Bindings auch nach delete("all") – Memory Leak
+-- label_editor.py	Image.NEAREST deprecated seit Pillow 10 → Image.Resampling.NEAREST
+-- label_editor.py	_photo_refs-hasattr-Guards sind redundant nach _redraw-Initialisierung
+-- service_db.py	BASE_DIR wird lokal als _BASE_DIR neu berechnet
+-- az_reisekosten.py	Timezone-Berechnung mit time.timezone/altzone – robuster: datetime.now().astimezone().utcoffset()
+-- Gesamt	Kein WM_DELETE_WINDOW-Handler → offene FTP-Verbindungen / Logs beim Schließen nicht sauber beendet
+-- Gesamt	Session-Logs wachsen unbegrenzt in res/logs/ – kein automatisches Cleanup alter Dateien
+-- e_bg	surface2 bzw. row_stripe (je nach Parität)	bg (= gleich wie Tag-Header) → einheitlicher Block
+-- Entry-Feld-Hintergrund	bg_=e_bg	bg_=C["surface2"] fix – Eingabefelder sehen immer wie Felder aus
+-- _day_rows	nur row gespeichert	row + e_rows: [...] – alle Unterzeilen werden getrackt
+-- _select_day / _select_entry	nur info["row"].config(bg=...)	_recolor_block() → färbt Header-Frame + alle Eintrags-Frames + ihre Labels gemeinsam um
 
 
+################################################################################
+
+######### -- v1.9.0 -- #########
+
+###Allgemein, Doku
+-- Alle Buttons mit Tooltip Klassen versehen (Hilfsfunktionen)
+-- Dokumentation erstellt 
+
+### AZ & Reisekosten 
+-- Salesforce Login hinzugefügt (SF Token von Benni muss noch hinzugefügt werden)
+-- Salesforce Load, über SOSQL Daten aus TimeSheet abfragen und in aktuelle KW einfügen (muss noch getestet werden, wenn API Zugang gegeben)
+-- Bug-Fix (Hauptursache für #NV):
+-- Enddatum geht jetzt auf H7 (col 8) statt I7 (col 9) → die Excel-Berechnung sollte jetzt stimmen
+-- Innendienst-Filter:
+-- Einträge mit Dienstart Innendienst / Homeoffice werden in der Reisekosten-Excel übersprungen
+-- Gemischte Tage (z.B. Do: erst Materialmanagement, dann Außendienst) werden nur mit dem AD-Anteil geladen
+-- Neue Zeile direkt unter der Stundenleiste (rechts): Sonstiges Kosten € — gilt für die ganze KW
+-- Wird beim KW-Speichern mitgespeichert und beim Wechsel der KW geladen
+-- Weitere kleine Anpassungen beim Extracten der Reisekosten
+
+### Salesforce-Auth/Login
+-- Nummerierte Schritt-für-Schritt-Anleitung direkt im Panel (immer sichtbar)
+-- Button "🌐 Salesforce in Chrome öffnen" → öffnet direkt die richtige URL
+-- Tooltip auf dem Session-ID-Feld erklärt wie lang sie gültig ist
+-- Tooltip auf "Verbinden" erklärt was passiert
+-- Tooltips auf allen Buttons (erscheinen nach ~0,6s Hover):
+-- 💾 Daten speichern — was wird gespeichert
+-- ⚡ Standardwoche füllen — welche Zeiten werden gesetzt
+-- ☁ Von Salesforce laden — Hinweis auf Überschreibung + Verbindungspflicht
+-- 💾 KW-Daten speichern — lokale Speicherung
+-- 📊 Servicezeitenmeldung — Innendienst inklusive
+-- 📊 Reisekosten FB_0020 — Innendienst übersprungen, Sonstiges-Zellen
+-- ◀ ▶ + 🗑 — Navigation + Löschen im Detail-Panel
+-- ✓ Übernehmen — Erinnerung ans KW-Speichern
+
+### Salesforce-Laden 
+Pause-Einträge (Type = "Pause") → Dauer in Minuten berechnen, als Pausenzeit für den Tag übernehmen
+Reisezeit-Einträge → zählen für Tag-Start/Ende, werden aber nach SA gruppiert wie Arbeitszeit
+Tag-Start = frühester Eintrag des Tages (07:00 Reisezeit)
+Tag-Ende = spätester Eintrag (16:00 Reisezeit-Rückfahrt)
+Pause wird nun neu berechnet sum(..) summiert jetzt alle SF-Einträge mit Type="Pause" 
+
+### Label Editor
+-- bei manchen Labels, die geladen wurde, wurde unten ein kleiner weißer Rand angezeigt (Label war kleiner als Canvas Widget, dadurch hat man das mid-frame gesehen)
+-- CANVAS_PAD = 0 
+-- Objejtrahmen von Arial Fonts wurde teilweise nicht richtig angezeigt 
+-- Arial Fonts bekommen jetzt dynamische Breitenberechnung (char:width wird jetzt nicht aus font_size generiert sondern liest char_height direkt aus und rendert dann)
+
+################################################################################
 
 ######### -- v1.8.0 -- #########
 
