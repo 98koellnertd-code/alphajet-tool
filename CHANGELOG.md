@@ -1,8 +1,8 @@
 ********************************************************************************
 ********************************************************************************
-********        -- alphaJET Interface-Tool -- Marvin Köllner --        *********
-********Steuerprogramm fuer Koenig & Bauer alphaJET Tintenstrahldrucker*********
-********                 Protokoll: G-PR(INT) V3.0.0                   *********
+-- alphaJET Interface-Tool -- Marvin Köllner -- 
+Steuerprogramm fuer Koenig & Bauer alphaJET Tintenstrahldrucker
+Protokoll: G-PR(INT) V3.0.0                   
 ********************************************************************************
 ********************************************************************************
 
@@ -10,21 +10,27 @@
 ################################################################################
 ################################################################################
 ################################################################################
-####################       -- neuste Version v2.0.0 --      ####################
+####################       -- neuste Version v2.1.0 --      ####################
 ################################################################################
 ################################################################################
 ################################################################################
+
+######### -- v2.1.0 -- #########
 
 ###LATEST CHANGES###
+
+### UPDATER
+-- App muss einmalig aktualisiert werden
+-- Updater neu gebaut, ohne Fehler und Errors, beim Theme Wechsel
+
+### MLG 
+-- Mlg Logos werden jetzt korrekt decodiert und  beim speichern korrekt codiert (kba (cgrafic) style)
 
 ### FTP 
 -- Drucker haben weder nlst noch mlds ftp-list-formate.. 
 -- normalerweise gibt es standardformate für ftp. also erhält man einfach eine stumpfe Liste.
 -- wenn kein format erkannt wird, man die datei sich anguckt, welcher type, größe, name.. und das in spalten anzeigt und natürlich verarbeiten/visualisiert.
 -- Speichern als SVG entfernt. unnötig.
-
-### MLG 
--- Mlg Logos werden jetzt korrekt decodiert und  beim speichern korrekt codiert (kba (cgrafic) style)
 
 ### LOCAL
 -- cancel wird nun richtig ausgeführt, auch beim theme wechsel (löschen aller temp. files)
@@ -149,6 +155,16 @@ Pause wird nun neu berechnet sum(..) summiert jetzt alle SF-Einträge mit Type="
 
 ######### -- v1.8.0 -- #########
 
+### Mock Server
+-- Mock Server kann nun auch zum FTP Test genutzt werden, ebenfals zum Monitoring mit 2. PC 
+-- Testdateien werden beim ersten Start automatisch in res/mock_ftp/ angelegt:
+-- Ordner	Datei	Inhalt
+-- labels/	sample_label.gp	G-PRINT Label mit Text + Barcode
+-- logos/	kb_logo.svg	K&B-Buchstaben als Pixel-SVG (32×16)
+-- logos/	checkerboard.mlg	Schachbrett-Muster im MLG-Binärformat
+-- configs/	printer_test.pcf	Drucker-Netzwerkkonfiguration
+-- printctl/	default.ctl	PrintControl mit Trigger/Speed
+
 ### Design
 -- Forest TTK Dark Theme Unterstützung (res/themes/forest-dark.tcl)
 -- Farbpalette kontrastreicher (Text heller, Buttons mit solidem Hintergrund + hellem Text)
@@ -156,16 +172,12 @@ Pause wird nun neu berechnet sum(..) summiert jetzt alle SF-Einträge mit Type="
 
 ### AZ & Reisekosten (neuer Tab, neue Datei az_reisekosten.py)
 -- Persönliche Daten speichern (Name, Wohnort, Personal-Nr)
--- Salesforce FSL Anbindung: Login per OAuth2 oder Session-ID (VPN)
 -- Wochenansicht mit editierbaren Feldern: Status, Start/Ende/Pause, Stunden (live berechnet)
 -- Detail-Panel pro Tag: Auftr.Nr, Kunde, Standort, Reiseweg, Start-/Endpunkt
 -- Reisekosten-Felder: Art (Außen-/Innendienst/Ausland), Land, Übernachtung, Mahlzeiten, km, Sonstiges
 -- KW-Daten werden pro Woche lokal gespeichert (res/kw_data/)
 -- Stundenübersicht PDF: komplette Monatstabelle (A4 Querformat, alle KWs des Monats)
--- Excel Servicezeitenmeldung (FB_0221): befüllt Vorlage automatisch mit KW-Daten
 -- Excel Reisekostenabrechnung (FB_0020): befüllt Vorlage mit Monatsdaten inkl. Pauschalen-Felder
--- Vorlagen werden beim ersten Klick einmalig eingerichtet (res/templates/)
--- Abhängigkeiten (reportlab, openpyxl) werden beim ersten Start automatisch installiert
 
 ################################################################################
 
@@ -181,6 +193,10 @@ Pause wird nun neu berechnet sum(..) summiert jetzt alle SF-Einträge mit Type="
 -- Lädt alles vom Drucker (/) rekursiv herunter
 -- Packt als ZIP-Archiv
 -- Speicherdialog mit Voreinstellung backup_{IP}.zip
+-- Schriftgröße der Tab-Leiste: 9 → 11 pt (Icons und Text deutlich größer)
+-- Padding leicht angepasst für bessere Proportionen
+-- FTP hat jetzt ein Icon: 📂
+-- Alle Tab-Namen aufgeräumt — einheitliches Format 🔣 Name ohne unnötige Leerzeichen-Füller
 -- Ping Test wird jetzt ebenfalls im FTB Tab automatisch alle 30sek nach Verbindung durchgeführt, wenn false -> Nicht Verbunden
 -- Keine Antwort / Exception → Status -> Nicht verbunden, Baum wird geleert, Button auf "Verbinden" zurück, Log-Eintrag
 -- Öffnet jetzt askopenfilenames → mehrere Dateien gleichzeitig auswählbar
@@ -193,7 +209,6 @@ Pause wird nun neu berechnet sum(..) summiert jetzt alle SF-Einträge mit Type="
 -- Existierende Ordner werden nicht als Fehler behandelt
 -- Fortschrittsanzeige pro Datei, danach Baum-Refresh
 -- Ziel wird immer aus dem aktuell im Baum markierten Element abgeleitet:
--- 
 -- Ordner markiert → direkt dort hinein
 -- Datei markiert → in deren übergeordneten Ordner
 -- Nichts markiert → Root /
