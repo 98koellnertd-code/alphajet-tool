@@ -10,14 +10,52 @@ Protokoll: G-PR(INT) V3.0.0
 ################################################################################
 ################################################################################
 ################################################################################
-####################       -- neuste Version v2.1.0 --      ####################
+####################       -- neuste Version v2.1.2 --      ####################
 ################################################################################
 ################################################################################
 ################################################################################
-
-######### -- v2.1.0 -- #########
 
 ###LATEST CHANGES###
+
+######### -- v2.1.2 -- #########
+
+### CRA-Anpassungen
+###utils.py
+-- TEST-FTP-Eintrag entfernt (Drittanbieter-Server mit öffentlichen Credentials)
+-- FTP-Credentials werden jetzt aus res/ftp_credentials.json geladen wenn vorhanden → Werksvorgaben überschreibbar ohne Code-Änderung
+-- Neue Helfer: validate_ip(), validate_port(), validate_gprint_xml(), validate_local_path()
+### tool.py
+-- import hashlib ergänzt; _verify_sha256() hinzugefügt; Update-Download prüft SHA-256 aus version.json vor dem Ausführen – Abort bei Mismatch
+-- _save_network(): IP-Format, Port 1–65535, Timeout 1–120 werden vor dem Speichern geprüft
+-- _run_cmd(): G-PRINT-XML-Struktur (<GP>…</GP>) wird validiert bevor gesendet wird
+### ftp.py
+-- Sichtbare Warnung im FTP-Header: "FTP überträgt Daten unverschlüsselt – nur in gesichertem Netzwerk verwenden (CRA Art. 13)"
+-- _ftp_connect(): IP-Adresse und Port werden vor dem Verbindungsaufbau validiert
+-- _ftp_download_recursive(): Path-Traversal-Schutz — Dateinamen mit / oder \ werden blockiert; lokale Pfade werden auf Verbleib im Zielverzeichnis geprüft
+-- _ftp_upload_recursive(): Versteckte Dateien (.) und Einträge mit Pfadzeichen werden übersprungen
+###requirements.txt	
+reportlab (nie benutzt) entfernt; pyftpdlib ergänzt
+###BUILD.bat	
+reportlab-Check und --collect-all "reportlab" entfernt
+###SECURITY.md	
+-- Vulnerability Disclosure Policy (CRA Art. 13/14): Meldeweg, Reaktionszeiten, bekannte Risiken (FTP), implementierte Maßnahmen
+### sbom.json	
+Software Bill of Materials im CycloneDX 1.4 Format (CRA Annex I, Part II)
+###version.json
+--SHA 256 
+### OP-01 – Security Audit Log (utils.py, ftp.py, tool.py)
+-- utils.security_log(event, detail, result) schreibt JSON-Lines nach res/logs/security_audit.jsonl (thread-safe)
+-- ftp.py: Log-Eintrag bei FTP-Connect (ok/error)
+-- tool.py: Log-Einträge in do_download() (start/ok/hash_error/error) und _save_network() (CONFIG_CHANGE)
+### OP-02 – Pfad-Leak in Exception-Meldungen (utils.py, tool.py, az_reisekosten.py)
+-- utils.sanitize_error(e) — kürzt absolute Windows/POSIX-Pfade auf Dateinamen
+-- Verwendet in _file_import(), do_download() (tool.py) und Excel-Fehlerdialogen (az_reisekosten.py)
+### OP-03 – pip-audit in BUILD.bat
+-- Auto-install von pip-audit falls fehlend, dann pip_audit --requirement requirements.txt vor PyInstaller
+### OP-04 – SECURITY.md
+Abschnitt "Geräte-Standardpasswörter" um Schritt-für-Schritt-Anleitung und vollständige ftp_credentials.json-Struktur erweitert
+
+######### -- v2.1.1 -- #########
 
 ### UPDATER
 -- App muss einmalig aktualisiert werden
