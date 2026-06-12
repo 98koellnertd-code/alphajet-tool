@@ -1,6 +1,6 @@
 {
-  "version": "2.1.0",
-  "download_url": "https://github.com/98koellnertd-code/alphajet-tool/releases/download/v2.1.0/alphaJet-InterfaceTool.exe",
+  "version": "2.0.9",
+  "download_url": "https://github.com/98koellnertd-code/alphajet-tool/releases/download/v2.0.9/alphaJet-InterfaceTool.exe",
   "name": "K & B alphaJET - Servicetechniker Tool",
-  "notes": ""
+  "notes": "### UPDATER\n-- App muss einmalig aktualisiert werden\n-- Updater neu gebaut, ohne Fehler und Errors, beim Theme Wechsel\n\n### MLG \n-- Mlg Logos werden jetzt korrekt decodiert und  beim speichern korrekt codiert (kba (cgrafic) style)\n\n### FTP \n-- Drucker haben weder nlst noch mlds ftp-list-formate.. \n-- normalerweise gibt es standardformate für ftp. also erhält man einfach eine stumpfe Liste.\n-- wenn kein format erkannt wird, man die datei sich anguckt, welcher type, größe, name.. und das in spalten anzeigt und natürlich verarbeiten/visualisiert.\n-- Speichern als SVG entfernt. unnötig.\n\n### LOCAL\n-- cancel wird nun richtig ausgeführt, auch beim theme wechsel (löschen aller temp. files)\n\n### LABELS / Configs\n-- neue Befehle hinzugefügt"
 }
