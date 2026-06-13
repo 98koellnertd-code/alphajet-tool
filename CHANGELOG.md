@@ -1,453 +1,386 @@
-********************************************************************************
-********************************************************************************
--- alphaJET Interface-Tool -- Marvin Köllner -- 
-Steuerprogramm fuer Koenig & Bauer alphaJET Tintenstrahldrucker
-Protokoll: G-PR(INT) V3.0.0                   
-********************************************************************************
-********************************************************************************
+# alphaJET Interface-Tool — Changelog
 
+> Versionshistorie des internen Servicetechniker-Tools für Koenig & Bauer alphaJET CIJ-Drucker.
 
+![Version](https://img.shields.io/badge/Version-2.1.2-brightgreen)
+![Platform](https://img.shields.io/badge/Platform-Windows%2010%20%2F%2011-blue)
+![Protocol](https://img.shields.io/badge/Protokoll-G--PR(INT)%20V3.0.0-orange)
+![Python](https://img.shields.io/badge/Python-3.11%2B-yellow)
+![Internal](https://img.shields.io/badge/Verwendung-Intern%20%2F%20Vertraulich-red)
+
+---
+
+Dieses Dokument enthält alle Anpassungen seit Version v.1.0.0
+
+<!--
 ################################################################################
+  ACHTUNG: Der Block ###LATEST CHANGES### wird vom Updater automatisch ausgelesen.
+  Alles unterhalb wird im Update-Dialog angezeigt. Nicht entfernen oder umbenennen.
 ################################################################################
-################################################################################
-####################       -- neuste Version v2.1.2 --      ####################
-################################################################################
-################################################################################
-################################################################################
+-->
 
 ###LATEST CHANGES###
 
 ######### -- v2.1.2 -- #########
 
 ### CRA-Anpassungen
-###utils.py
--- TEST-FTP-Eintrag entfernt (Drittanbieter-Server mit öffentlichen Credentials)
--- FTP-Credentials werden jetzt aus res/ftp_credentials.json geladen wenn vorhanden → Werksvorgaben überschreibbar ohne Code-Änderung
--- Neue Helfer: validate_ip(), validate_port(), validate_gprint_xml(), validate_local_path()
-### tool.py
--- import hashlib ergänzt; _verify_sha256() hinzugefügt; Update-Download prüft SHA-256 aus version.json vor dem Ausführen – Abort bei Mismatch
--- _save_network(): IP-Format, Port 1–65535, Timeout 1–120 werden vor dem Speichern geprüft
--- _run_cmd(): G-PRINT-XML-Struktur (<GP>…</GP>) wird validiert bevor gesendet wird
-### ftp.py
--- Sichtbare Warnung im FTP-Header: "FTP überträgt Daten unverschlüsselt – nur in gesichertem Netzwerk verwenden (CRA Art. 13)"
--- _ftp_connect(): IP-Adresse und Port werden vor dem Verbindungsaufbau validiert
--- _ftp_download_recursive(): Path-Traversal-Schutz — Dateinamen mit / oder \ werden blockiert; lokale Pfade werden auf Verbleib im Zielverzeichnis geprüft
--- _ftp_upload_recursive(): Versteckte Dateien (.) und Einträge mit Pfadzeichen werden übersprungen
-###requirements.txt	
-reportlab (nie benutzt) entfernt; pyftpdlib ergänzt
-###BUILD.bat	
-reportlab-Check und --collect-all "reportlab" entfernt
-###SECURITY.md	
--- Vulnerability Disclosure Policy (CRA Art. 13/14): Meldeweg, Reaktionszeiten, bekannte Risiken (FTP), implementierte Maßnahmen
-### sbom.json	
-Software Bill of Materials im CycloneDX 1.4 Format (CRA Annex I, Part II)
-###version.json
---SHA 256 
-### OP-01 – Security Audit Log (utils.py, ftp.py, tool.py)
--- utils.security_log(event, detail, result) schreibt JSON-Lines nach res/logs/security_audit.jsonl (thread-safe)
--- ftp.py: Log-Eintrag bei FTP-Connect (ok/error)
--- tool.py: Log-Einträge in do_download() (start/ok/hash_error/error) und _save_network() (CONFIG_CHANGE)
-### OP-02 – Pfad-Leak in Exception-Meldungen (utils.py, tool.py, az_reisekosten.py)
--- utils.sanitize_error(e) — kürzt absolute Windows/POSIX-Pfade auf Dateinamen
--- Verwendet in _file_import(), do_download() (tool.py) und Excel-Fehlerdialogen (az_reisekosten.py)
-### OP-03 – pip-audit in BUILD.bat
--- Auto-install von pip-audit falls fehlend, dann pip_audit --requirement requirements.txt vor PyInstaller
-### OP-04 – SECURITY.md
-Abschnitt "Geräte-Standardpasswörter" um Schritt-für-Schritt-Anleitung und vollständige ftp_credentials.json-Struktur erweitert
+#### `utils.py`
+- TEST-FTP-Eintrag entfernt (Drittanbieter-Server mit öffentlichen Credentials)
+- FTP-Credentials werden jetzt aus `res/ftp_credentials.json` geladen, wenn vorhanden → Werksvorgaben überschreibbar ohne Code-Änderung
+- Neue Helfer: `validate_ip()`, `validate_port()`, `validate_gprint_xml()`, `validate_local_path()`
 
-######### -- v2.1.1 -- #########
+#### `tool.py`
+- `import hashlib` ergänzt; `_verify_sha256()` hinzugefügt
+- Update-Download prüft SHA-256 aus `version.json` vor dem Ausführen – Abort bei Mismatch
+- `_save_network()`: IP-Format, Port 1–65535, Timeout 1–120 werden vor dem Speichern geprüft
+- `_run_cmd()`: G-PRINT-XML-Struktur (`<GP>…</GP>`) wird validiert bevor gesendet wird
 
-### UPDATER
--- App muss einmalig aktualisiert werden
--- Updater neu gebaut, ohne Fehler und Errors, beim Theme Wechsel
+#### `ftp.py`
+- Sichtbare Warnung im FTP-Header: *„FTP überträgt Daten unverschlüsselt – nur in gesichertem Netzwerk verwenden (CRA Art. 13)"*
+- `_ftp_connect()`: IP-Adresse und Port werden vor dem Verbindungsaufbau validiert
+- `_ftp_download_recursive()`: Path-Traversal-Schutz — Dateinamen mit `/` oder `\` werden blockiert; lokale Pfade werden auf Verbleib im Zielverzeichnis geprüft
+- `_ftp_upload_recursive()`: Versteckte Dateien (`.`) und Einträge mit Pfadzeichen werden übersprungen
 
-### MLG 
--- Mlg Logos werden jetzt korrekt decodiert und  beim speichern korrekt codiert (kba (cgrafic) style)
+#### Sonstige Dateien
+| Datei | Änderung |
+|---|---|
+| `requirements.txt` | `reportlab` (nie benutzt) entfernt; `pyftpdlib` ergänzt |
+| `BUILD.bat` | `reportlab`-Check und `--collect-all "reportlab"` entfernt |
+| `SECURITY.md` | Vulnerability Disclosure Policy (CRA Art. 13/14): Meldeweg, Reaktionszeiten, bekannte Risiken (FTP), implementierte Maßnahmen |
+| `sbom.json` | Software Bill of Materials im CycloneDX 1.4 Format (CRA Annex I, Part II) |
+| `version.json` | SHA-256-Feld ergänzt |
 
-### FTP 
--- Drucker haben weder nlst noch mlds ftp-list-formate.. 
--- normalerweise gibt es standardformate für ftp. also erhält man einfach eine stumpfe Liste.
--- wenn kein format erkannt wird, man die datei sich anguckt, welcher type, größe, name.. und das in spalten anzeigt und natürlich verarbeiten/visualisiert.
--- Speichern als SVG entfernt. unnötig.
+### Security Audit (OP-01 bis OP-04)
 
-### LOCAL
--- cancel wird nun richtig ausgeführt, auch beim theme wechsel (löschen aller temp. files)
+| Ticket | Bereich | Maßnahme |
+|---|---|---|
+| OP-01 | `utils.py`, `ftp.py`, `tool.py` | `utils.security_log(event, detail, result)` schreibt JSON-Lines nach `res/logs/security_audit.jsonl` (thread-safe); Log-Einträge bei FTP-Connect, Download (start/ok/hash_error/error) und `_save_network()` (CONFIG_CHANGE) |
+| OP-02 | `utils.py`, `tool.py`, `az_reisekosten.py` | `utils.sanitize_error(e)` kürzt absolute Windows/POSIX-Pfade auf Dateinamen; verwendet in `_file_import()`, `do_download()` und Excel-Fehlerdialogen |
+| OP-03 | `BUILD.bat` | Auto-install von `pip-audit` falls fehlend, dann `pip_audit --requirement requirements.txt` vor PyInstaller |
+| OP-04 | `SECURITY.md` | Abschnitt „Geräte-Standardpasswörter" um Schritt-für-Schritt-Anleitung und vollständige `ftp_credentials.json`-Struktur erweitert |
 
-### LABELS / Configs
--- neue Befehle hinzugefügt
+---
 
-################################################################################
+<details>
+<summary><b>v2.1.1</b> — Updater-Fix · MLG-Fixes · FTP-Verbesserungen · Local Cancel</summary>
 
-######### -- v2.0.0 -- #########
+### Updater
+- App muss einmalig aktualisiert werden
+- Updater neu gebaut, ohne Fehler und Errors beim Theme-Wechsel
 
-### Updates
--- Update über GIT eingebunden und version.json
-
-### Design 
--- Es kann nun zwischen Hell und Dunkel gewählt werden (forest-dark & forest-light)
--- eigenes Stylesheet erstellt 
--- Button Anpassungen
--- Schriftanpassungen
--- insgesamt alles etwas größer &  kontrastreicher und damit übersichtlicher gestaltet
--- kompletter Design-Quellcode in utils.py ausgelagert 
-
-#### Code Änderungen, Ineffizienzen, Exceptions und Performance + 
--- _build_props_area → nur noch Header-Label + _props_built = False. Canvas, Scrollbar, Inner-Frame werden nicht mehr beim Start gebaut.
--- _ensure_props_built() → neuer Helfer, baut das Panel beim ersten Aufruf, danach no-op.
--- _show_props(obj) → ruft _ensure_props_built() als erstes — das ist der einzige Trigger.
--- _show_empty_props() → if not self._props_built: return — solange kein Objekt je angeklickt wurde, gibt es nichts zu leeren.
--- Toggle-Button Auto-Ping: AUS/AN vollständig entfernt
--- Startet automatisch 3s nach App-Start, läuft für immer
--- _printer_ping_id wird gespeichert → after_cancel beim Schließen der App via neuem _on_close-Handler (löst gleichzeitig den fehlenden WM_DELETE_WINDOW-Bug aus dem Code-Review)
--- Status: Verbunden (grün) / Offline (rot)
--- FTP-Keepalive (ftp.py)
--- 10s Intervall statt 30s
--- _ftp_keepalive_id gespeichert → bei "Trennen" und bei _ftp_on_kicked sofort gecancelt
--- Verhindert damit die doppelte-Loop-Akkumulation beim schnellen Trennen/Verbinden
--- Status bei Verbindungsverlust jetzt: ● Offline statt ● Nicht verbunden
--- Salesforce-Ping (az_reisekosten.py)
--- Neuer _sf_ping_loop() startet 5s nach Tab-Öffnung, läuft dann dauerhaft
--- Solange kein Token: idled (1 µs Check + reschedule)
--- Nach Login: GET /services/data/ – leichtester möglicher Endpoint (nur API-Versionsliste, ~200 Bytes)
--- 401/403 → Token wird gecleart, Dot rot, Text "Session abgelaufen"
--- Netzwerkfehler / 5xx → Dot gelb, Text "Verbindungsproblem" (Token bleibt erhalten, evtl. nur kurze Störung)
--- _sf_display_name wird nach Login gespeichert und vom Ping-Loop wiederverwendet
--- HTTPS-Enforcement	_update_check prüft url.startswith("https://") → Warnung + Abbruch; _update_prompt prüft dl_url ebenfalls
--- shell=True → os.startfile	Kein Subprozess mehr für ncpa.cpl
--- FTP-Tab Fehlerbehandlung	Jeder Sub-Build (Monitor, LabelEditor, LogoEditor) einzeln in try/except; bei FTPTab-Fehler: Fehlermeldung im Tab statt leerem Frame
--- MockFTPServer.start() bindet den Socket synchron – kein Warten nötig. Externer Server wird direkt als verfügbar markiert (ohne falsches _running=True)
--- Kein gefaktes MockFTPServer-Objekt mehr wenn Port schon belegt – nur Status-Update und return True
--- Doppeltes socket.close()	relay() schließt nur src; signalisiert dst via shutdown(SHUT_WR) → jeder Socket wird exakt einmal geschlossen
--- _calc_hours Duplikation	Delegiert jetzt an _calc_entry_hours – eine Implementierung, kein kopierter Code
--- 53× JSON im Main-Thread	File-I/O komplett in _do_stundenblatt (Hintergrundthread) verschoben; Main-Thread übergibt nur dict(self._day_data) als Snapshot
--- kw_data.pop()	→ kw_data.get() – kein Seiteneffekt auf übergebenes Dict
--- StringVar GC-anfällig	sv wird in self._day_rows[ds]["sv"] gespeichert → starke Referenz, sicher gegen Garbage Collector
--- Thread-Safety self._ftp	threading.Lock() schützt alle Schreibzugriffe (connect/disconnect); Keepalive liest atomisch in lokale Variable ftp
--- Tiefenbegrenzung	_ftp_download_recursive(_depth=0) – Abbruch bei _depth > 20
--- _ftp_mkd_safe	Prüft jetzt Codes 550, 521, 553 + "exists" im Text → kompatibel mit vsftpd, PureFTPd, ProFTPd
--- utils.py	save_json hat kein Exception-Handling – Dateisystem voll → unkontrollierter Crash
--- utils.py	LABEL_EXTS enthält .TXT, .Txt etc. redundant – has_ext normiert schon alles
--- label_editor.py	BASE_DIR wird lokal neu berechnet statt from utils import BASE_DIR
--- label_editor.py	tag_bind in _redraw akkumuliert Bindings auch nach delete("all") – Memory Leak
--- label_editor.py	Image.NEAREST deprecated seit Pillow 10 → Image.Resampling.NEAREST
--- label_editor.py	_photo_refs-hasattr-Guards sind redundant nach _redraw-Initialisierung
--- service_db.py	BASE_DIR wird lokal als _BASE_DIR neu berechnet
--- az_reisekosten.py	Timezone-Berechnung mit time.timezone/altzone – robuster: datetime.now().astimezone().utcoffset()
--- Gesamt	Kein WM_DELETE_WINDOW-Handler → offene FTP-Verbindungen / Logs beim Schließen nicht sauber beendet
--- Gesamt	Session-Logs wachsen unbegrenzt in res/logs/ – kein automatisches Cleanup alter Dateien
--- e_bg	surface2 bzw. row_stripe (je nach Parität)	bg (= gleich wie Tag-Header) → einheitlicher Block
--- Entry-Feld-Hintergrund	bg_=e_bg	bg_=C["surface2"] fix – Eingabefelder sehen immer wie Felder aus
--- _day_rows	nur row gespeichert	row + e_rows: [...] – alle Unterzeilen werden getrackt
--- _select_day / _select_entry	nur info["row"].config(bg=...)	_recolor_block() → färbt Header-Frame + alle Eintrags-Frames + ihre Labels gemeinsam um
-
-
-################################################################################
-
-######### -- v1.9.0 -- #########
-
-###Allgemein, Doku
--- Alle Buttons mit Tooltip Klassen versehen (Hilfsfunktionen)
--- Dokumentation erstellt 
-
-### AZ & Reisekosten 
--- Salesforce Login hinzugefügt (SF Token von Benni muss noch hinzugefügt werden)
--- Salesforce Load, über SOSQL Daten aus TimeSheet abfragen und in aktuelle KW einfügen (muss noch getestet werden, wenn API Zugang gegeben)
--- Bug-Fix (Hauptursache für #NV):
--- Enddatum geht jetzt auf H7 (col 8) statt I7 (col 9) → die Excel-Berechnung sollte jetzt stimmen
--- Innendienst-Filter:
--- Einträge mit Dienstart Innendienst / Homeoffice werden in der Reisekosten-Excel übersprungen
--- Gemischte Tage (z.B. Do: erst Materialmanagement, dann Außendienst) werden nur mit dem AD-Anteil geladen
--- Neue Zeile direkt unter der Stundenleiste (rechts): Sonstiges Kosten € — gilt für die ganze KW
--- Wird beim KW-Speichern mitgespeichert und beim Wechsel der KW geladen
--- Weitere kleine Anpassungen beim Extracten der Reisekosten
-
-### Salesforce-Auth/Login
--- Nummerierte Schritt-für-Schritt-Anleitung direkt im Panel (immer sichtbar)
--- Button "🌐 Salesforce in Chrome öffnen" → öffnet direkt die richtige URL
--- Tooltip auf dem Session-ID-Feld erklärt wie lang sie gültig ist
--- Tooltip auf "Verbinden" erklärt was passiert
--- Tooltips auf allen Buttons (erscheinen nach ~0,6s Hover):
--- 💾 Daten speichern — was wird gespeichert
--- ⚡ Standardwoche füllen — welche Zeiten werden gesetzt
--- ☁ Von Salesforce laden — Hinweis auf Überschreibung + Verbindungspflicht
--- 💾 KW-Daten speichern — lokale Speicherung
--- 📊 Servicezeitenmeldung — Innendienst inklusive
--- 📊 Reisekosten FB_0020 — Innendienst übersprungen, Sonstiges-Zellen
--- ◀ ▶ + 🗑 — Navigation + Löschen im Detail-Panel
--- ✓ Übernehmen — Erinnerung ans KW-Speichern
-
-### Salesforce-Laden 
-Pause-Einträge (Type = "Pause") → Dauer in Minuten berechnen, als Pausenzeit für den Tag übernehmen
-Reisezeit-Einträge → zählen für Tag-Start/Ende, werden aber nach SA gruppiert wie Arbeitszeit
-Tag-Start = frühester Eintrag des Tages (07:00 Reisezeit)
-Tag-Ende = spätester Eintrag (16:00 Reisezeit-Rückfahrt)
-Pause wird nun neu berechnet sum(..) summiert jetzt alle SF-Einträge mit Type="Pause" 
-
-### Label Editor
--- bei manchen Labels, die geladen wurde, wurde unten ein kleiner weißer Rand angezeigt (Label war kleiner als Canvas Widget, dadurch hat man das mid-frame gesehen)
--- CANVAS_PAD = 0 
--- Objejtrahmen von Arial Fonts wurde teilweise nicht richtig angezeigt 
--- Arial Fonts bekommen jetzt dynamische Breitenberechnung (char:width wird jetzt nicht aus font_size generiert sondern liest char_height direkt aus und rendert dann)
-
-################################################################################
-
-######### -- v1.8.0 -- #########
-
-### Mock Server
--- Mock Server kann nun auch zum FTP Test genutzt werden, ebenfals zum Monitoring mit 2. PC 
--- Testdateien werden beim ersten Start automatisch in res/mock_ftp/ angelegt:
--- Ordner	Datei	Inhalt
--- labels/	sample_label.gp	G-PRINT Label mit Text + Barcode
--- logos/	kb_logo.svg	K&B-Buchstaben als Pixel-SVG (32×16)
--- logos/	checkerboard.mlg	Schachbrett-Muster im MLG-Binärformat
--- configs/	printer_test.pcf	Drucker-Netzwerkkonfiguration
--- printctl/	default.ctl	PrintControl mit Trigger/Speed
-
-### Design
--- Forest TTK Dark Theme Unterstützung (res/themes/forest-dark.tcl)
--- Farbpalette kontrastreicher (Text heller, Buttons mit solidem Hintergrund + hellem Text)
--- Farbige Buttons (Grün/Rot/Orange/Blau/Lila/Gelb) nun auch unter Forest-Theme korrekt dargestellt
-
-### AZ & Reisekosten (neuer Tab, neue Datei az_reisekosten.py)
--- Persönliche Daten speichern (Name, Wohnort, Personal-Nr)
--- Wochenansicht mit editierbaren Feldern: Status, Start/Ende/Pause, Stunden (live berechnet)
--- Detail-Panel pro Tag: Auftr.Nr, Kunde, Standort, Reiseweg, Start-/Endpunkt
--- Reisekosten-Felder: Art (Außen-/Innendienst/Ausland), Land, Übernachtung, Mahlzeiten, km, Sonstiges
--- KW-Daten werden pro Woche lokal gespeichert (res/kw_data/)
--- Stundenübersicht PDF: komplette Monatstabelle (A4 Querformat, alle KWs des Monats)
--- Excel Reisekostenabrechnung (FB_0020): befüllt Vorlage mit Monatsdaten inkl. Pauschalen-Felder
-
-################################################################################
-
-######### -- v1.7.0 -- #########
-
-### FTP Tab
--- Ordner werden jetzt immer zuerst angezeigt, dann Dateien (alphabetisch sortiert)
--- Icons je Dateityp: 📁 Ordner · 📝 Labels · ⚙ Configs · 🖨 PrintCtl · 🖼 Logos · 📄 Rest
--- Download-Button funktioniert jetzt für Dateien und Ordner
--- Datei → Speicherdialog wie bisher
--- Ordner → Zielordner wählen → rekursiver Download mit Fortschrittsanzeige
--- Backup-Button (lila, neuer Abschnitt rechts)
--- Lädt alles vom Drucker (/) rekursiv herunter
--- Packt als ZIP-Archiv
--- Speicherdialog mit Voreinstellung backup_{IP}.zip
--- Schriftgröße der Tab-Leiste: 9 → 11 pt (Icons und Text deutlich größer)
--- Padding leicht angepasst für bessere Proportionen
--- FTP hat jetzt ein Icon: 📂
--- Alle Tab-Namen aufgeräumt — einheitliches Format 🔣 Name ohne unnötige Leerzeichen-Füller
--- Ping Test wird jetzt ebenfalls im FTB Tab automatisch alle 30sek nach Verbindung durchgeführt, wenn false -> Nicht Verbunden
--- Keine Antwort / Exception → Status -> Nicht verbunden, Baum wird geleert, Button auf "Verbinden" zurück, Log-Eintrag
--- Öffnet jetzt askopenfilenames → mehrere Dateien gleichzeitig auswählbar
--- Alle werden nacheinander in das aktuell im Baum gewählte Verzeichnis hochgeladen
--- Fortschrittsanzeige pro Datei
--- Am Ende: Upload abgeschlossen: 3/3 Dateien → /label
--- „Ordner hochladen" (neu)
--- Öffnet Ordner-Auswahldialog
--- Lädt den Ordner rekursiv hoch — Unterordner werden auf dem Drucker automatisch erstellt (MKD)
--- Existierende Ordner werden nicht als Fehler behandelt
--- Fortschrittsanzeige pro Datei, danach Baum-Refresh
--- Ziel wird immer aus dem aktuell im Baum markierten Element abgeleitet:
--- Ordner markiert → direkt dort hinein
--- Datei markiert → in deren übergeordneten Ordner
--- Nichts markiert → Root /
-
-### Buttons
--- Alle Buttons / G-PRINT Befehle die nicht funktionierten gelöscht
--- Einheitliche Farbzuordnung auf allen Tabs (grün=speichern, blau=laden, rot=löschen..)
-
-### Hilfsfunktionen
--- Maus-Hover-Tooltips bei ausgewählten Funktionen mit detaillierter Beschreibung
-
-
-################################################################################
-
-######### -- v1.6.0 -- #########
-
-### Label Editor
--- Linespace-Skalierung entfernt — hat px_size auf bis zu -6 reduziert, Font war fast unsichtbar
--- Textposition: anchor="sw" + cy_b — Text an Unterkante ausgerichtet (Druckerlogik: Y=0 = unterste Zeile)
--- MLG-Rendering — zuvor nur SVG, PNG, BMP & JPG; MLG ist nicht in Pillow → eigene 1-Bit-Darstellung
--- Alle Bildformate werden jetzt selbst gerendert (Pillow Fonts Library entfernt)
--- Leerzeichen = 1 leerer Pixel
--- Teilweise Padding der Frames erhöht (Buttons waren in bestimmten Zuständen nicht sichtbar)
-
-### Logo Editor
--- Schachbrett-Hintergrund — zeigt transparente (weiße = nicht gedruckte) Pixel an
--- Schwarze Pixel — (20, 20, 20) statt reines Schwarz
--- Vorschau-Pixel beim Zeichnen von Linien/Rechtecken — grau mit sauberem Fill
--- Info-Zeile zeigt jetzt auch Anzahl gesetzter Pixel: z.B. "32 × 10 px · 87 Pixel gesetzt"
--- Schneller bei großen Logos — PIL rendert alles auf einmal, kein tausendfaches create_rectangle
--- Fallback ohne PIL — funktioniert weiterhin (alte Methode)
-
-################################################################################
-
-######### -- v1.5.0 -- #########
-
-### Design
--- Neue Farbpalette — Elegant Charcoal
--- Hintergrund: #1a1a1a → neutrales Dunkelgrau, kein Blau-Stich
--- Text: #e0e0e0 → warm-weiß, gut lesbar
--- Akzent: #5a9fd4 → Steel Blue, gedämpfter als vorher
--- Header: #141414 → fast schwarz, klarer Kontrast
--- Buttons — dunkler Hintergrund + Akzentfarbe als Text
--- Grün: dunkelgrüner Hintergrund #1c3528, mintgrüner Text #52a06e
--- Blau: dunkelblauer Hintergrund #1a2e40, Steel-Blue Text #5a9fd4
--- Rot: dunkelroter Hintergrund #3a1e1e, gedämpftes Rot #c05858
--- Orange: dunkel-amber Hintergrund, Bronze-Text
--- Header: 2px statt 3px Akzentlinie, kompakter (52px)
--- Tabs: neutrale Farbtrennung, kein blaues Underline
--- Checkboxen: Haken in Steel Blue bei Auswahl
--- Entries: Focus-Rahmen in Akzentfarbe
--- Treeview: saubere Zeilenhöhe 24px, flache Spaltenköpfe
+### MLG
+- MLG-Logos werden jetzt korrekt decodiert und beim Speichern korrekt codiert (KBA cgrafic-Style)
 
 ### FTP
--- Dateibaum war nach erfolgreicher Verbindung leer — Fix: Umstellung von ftp.dir() auf ftp.mlsd() (RFC 3659), Fallback auf ftp.nlst()
--- Standardpasswort AJD korrigiert + U von user musste groß! (noch beim aj5 prüfen)
--- FTP Timeout-Fehler gefixt (settimeout 120s)
--- Anpassung Design — FTP UI Header, Background, Fonts
+- Drucker unterstützen weder `nlst` noch `mlsd` FTP-List-Formate
+- Wenn kein Standardformat erkannt wird: Datei wird analysiert (Typ, Größe, Name) und in Spalten visualisiert
+- Speichern als SVG entfernt (unnötig)
+
+### Local
+- Cancel wird nun korrekt ausgeführt, auch beim Theme-Wechsel (löscht alle temporären Dateien)
+
+### Labels / Configs
+- Neue G-PRINT Befehle hinzugefügt
+
+</details>
+
+---
+
+<details>
+<summary><b>v2.0.0</b> — Dark/Light-Mode · Design-Overhaul · Code-Qualität · Performance</summary>
+
+### Design
+- Hell/Dunkel-Modus wählbar (`forest-dark` & `forest-light`)
+- Eigenes Stylesheet erstellt
+- Button- und Schriftanpassungen; alles größer und kontrastreicher
+- Kompletter Design-Quellcode in `utils.py` ausgelagert
+
+### Updates
+- Update über Git eingebunden; `version.json` als Versionsquelle
+
+### Performance & Code-Qualität
+
+| Bereich | Änderung |
+|---|---|
+| `_build_props_area` | Nur noch Header-Label + `_props_built = False`; Canvas/Scrollbar/Inner-Frame werden lazy gebaut |
+| Auto-Ping | Toggle entfernt; startet automatisch 3 s nach App-Start, läuft dauerhaft |
+| FTP-Keepalive | Intervall 10 s (statt 30 s); `_ftp_keepalive_id` gespeichert → kein Loop-Akkumulieren |
+| Salesforce-Ping | `_sf_ping_loop()` startet 5 s nach Tab-Öffnung; 401/403 → Token gecleart; Netzwerkfehler → Dot gelb |
+| HTTPS-Enforcement | `_update_check` und `_update_prompt` prüfen `url.startswith("https://")` |
+| `shell=True` → `os.startfile` | Kein Subprozess mehr für `ncpa.cpl` |
+| FTP-Tab Fehlerbehandlung | Jeder Sub-Build einzeln in `try/except`; Fehlermeldung im Tab statt leerem Frame |
+| Thread-Safety | `threading.Lock()` schützt alle Schreibzugriffe auf `self._ftp` |
+| Tiefenbegrenzung FTP | `_ftp_download_recursive(_depth=0)` – Abbruch bei `_depth > 20` |
+| `save_json` | Exception-Handling ergänzt (Dateisystem voll → kein unkontrollierter Crash) |
+| `label_editor.py` | `tag_bind` in `_redraw` akkumulierte Bindings → Memory Leak behoben |
+| `label_editor.py` | `Image.NEAREST` deprecated → `Image.Resampling.NEAREST` |
+| `az_reisekosten.py` | Timezone-Berechnung robuster: `datetime.now().astimezone().utcoffset()` |
+| Allgemein | `WM_DELETE_WINDOW`-Handler ergänzt → FTP/Logs werden sauber beendet |
+
+</details>
+
+---
+
+<details>
+<summary><b>v1.9.0</b> — AZ & Reisekosten · Salesforce · Label Editor Fixes</summary>
+
+### AZ & Reisekosten
+- Salesforce Login hinzugefügt (Session-ID-basiert)
+- Salesforce Load: SOQL-Abfrage aus TimeSheet → aktuelle KW befüllen
+- Bug-Fix (Hauptursache für `#NV`): Enddatum geht jetzt auf H7 statt I7
+- Innendienst-Filter: Einträge mit Dienstart Innendienst/Homeoffice werden in der Reisekosten-Excel übersprungen
+- Gemischte Tage (z. B. Materialmanagement + Außendienst) werden nur mit dem AD-Anteil geladen
+- Neue Zeile „Sonstiges Kosten €" direkt unter der Stundenleiste (gilt für die gesamte KW)
+- Weitere Anpassungen beim Extrahieren der Reisekosten
+
+### Salesforce-Auth / Login
+- Nummerierte Schritt-für-Schritt-Anleitung direkt im Panel
+- Button „🌐 Salesforce in Chrome öffnen"
+- Tooltips auf allen Buttons (erscheinen nach ~0,6 s Hover)
+
+### Salesforce-Laden
+- Pause-Einträge (`Type = "Pause"`) → Dauer als Pausenzeit übernehmen
+- Reisezeit-Einträge → zählen für Tag-Start/Ende
+- Tag-Start = frühester Eintrag; Tag-Ende = spätester Eintrag
+- Pause wird neu berechnet: `sum(..)` über alle SF-Einträge mit `Type="Pause"`
 
 ### Label Editor
--- Zähler-XML komplett auf Geräte-Format umgestellt
--- Neues Format mit Child-Elementen: FORMAT, AUTOSTOP, RESETABLE, REPRESETABLE, START, END, STEP, REP, COUNT, AC, TIMEDRESET
--- Rückwärtskompatibilität mit altem Attribut-Format bleibt erhalten
--- Zähler-Properties erweitert: Format-Dropdown, Autostop, Rückstellbar, Wiederh. rückstellbar, Wiederholung, Zählerstand, Alpha-Code, Start=PC, Globalen Zähler verw., Timed Reset, Prompted-Zähler
--- Objektrahmen-Badge zeigt jetzt X Y H L (Höhe und Länge in Strokes/px)
--- Dots/Pixel-Modus — neuer Toggle in der Toolbar
--- Dots: Tinte-Punkte als Kreise (benötigt Pillow + TTF-Font); Pixel: klassisches Rechteck
--- Linke Seitenleiste breiter (185 → 215 px)
--- Objektrahmen — Bounding-Box richtet sich jetzt exakt nach Drucker-Koordinaten
+- Weißer Rand unter bestimmten Labels entfernt (`CANVAS_PAD = 0`)
+- Arial-Font-Rahmen korrigiert: dynamische Breitenberechnung via `char_height`
+
+</details>
+
+---
+
+<details>
+<summary><b>v1.8.0</b> — Mock FTP-Server · Forest-Dark-Theme · AZ & Reisekosten (Basis)</summary>
+
+### Mock Server
+- Mock-Server kann jetzt auch für FTP-Tests und Monitoring mit einem 2. PC genutzt werden
+- Testdateien werden beim ersten Start automatisch in `res/mock_ftp/` angelegt
+
+| Ordner | Datei | Inhalt |
+|---|---|---|
+| `labels/` | `sample_label.gp` | G-PRINT Label mit Text + Barcode |
+| `logos/` | `kb_logo.svg` | K&B-Buchstaben als Pixel-SVG (32×16) |
+| `logos/` | `checkerboard.mlg` | Schachbrett-Muster im MLG-Binärformat |
+| `configs/` | `printer_test.pcf` | Drucker-Netzwerkkonfiguration |
+| `printctl/` | `default.ctl` | PrintControl mit Trigger/Speed |
+
+### Design
+- Forest TTK Dark Theme (`res/themes/forest-dark.tcl`)
+- Farbpalette kontrastreicher; farbige Buttons (Grün/Rot/Orange/Blau/Lila/Gelb) korrekt unter Forest-Theme
+
+### AZ & Reisekosten *(neuer Tab, neue Datei `az_reisekosten.py`)*
+- Persönliche Daten speichern (Name, Wohnort, Personal-Nr.)
+- Wochenansicht mit editierbaren Feldern: Status, Start/Ende/Pause, Stunden (live berechnet)
+- Detail-Panel pro Tag: Auftragsnummer, Kunde, Standort, Reiseweg, Start-/Endpunkt
+- Reisekosten-Felder: Art, Land, Übernachtung, Mahlzeiten, km, Sonstiges
+- KW-Daten werden lokal gespeichert (`res/kw_data/`)
+- Stundenübersicht PDF: komplette Monatstabelle (A4 Querformat)
+- Excel Reisekostenabrechnung (FB_0020): befüllt Vorlage inkl. Pauschalen-Felder
+
+</details>
+
+---
+
+<details>
+<summary><b>v1.7.0</b> — FTP-Verbesserungen · Upload-Funktionen · Tooltips · Button-Cleanup</summary>
+
+### FTP Tab
+- Ordner werden immer zuerst angezeigt, dann Dateien (alphabetisch)
+- Icons je Dateityp: 📁 Ordner · 📝 Labels · ⚙ Configs · 🖨 PrintCtl · 🖼 Logos · 📄 Rest
+- Download-Button funktioniert für Dateien und Ordner (rekursiv mit Fortschrittsanzeige)
+- Backup-Button (lila): lädt alles rekursiv herunter und packt als ZIP
+- Schriftgröße Tab-Leiste: 9 → 11 pt
+- `askopenfilenames` → mehrere Dateien gleichzeitig hochladbar
+- Neuer Button „Ordner hochladen": rekursiver Upload mit automatischer MKD-Ordnererstellung
+- Ziel wird aus dem aktuell markierten Baum-Element abgeleitet
+
+### Buttons
+- Alle nicht-funktionierenden G-PRINT Befehle entfernt
+- Einheitliche Farbzuordnung auf allen Tabs
+
+### Hilfsfunktionen
+- Maus-Hover-Tooltips mit detaillierter Beschreibung bei ausgewählten Funktionen
+
+</details>
+
+---
+
+<details>
+<summary><b>v1.6.0</b> — Label Editor Fixes · Logo Editor Verbesserungen</summary>
+
+### Label Editor
+- Linespace-Skalierung entfernt (hatte `px_size` auf bis zu −6 reduziert)
+- Textposition: `anchor="sw"` + `cy_b` — Text an Unterkante ausgerichtet (Druckerlogik: Y=0 = unterste Zeile)
+- MLG-Rendering: eigene 1-Bit-Darstellung (Pillow Fonts Library entfernt)
+- Alle Bildformate werden jetzt selbst gerendert
 
 ### Logo Editor
--- PNG speichern — neuer Button, transparenter Hintergrund (Pillow erforderlich)
--- JPG speichern — neuer Button, weißer Hintergrund (Pillow erforderlich)
+- Schachbrett-Hintergrund für transparente (nicht gedruckte) Pixel
+- Schwarze Pixel: `(20, 20, 20)` statt reines Schwarz
+- Vorschau-Pixel beim Zeichnen von Linien/Rechtecken (grau mit sauberem Fill)
+- Info-Zeile zeigt Anzahl gesetzter Pixel: z. B. *„32 × 10 px · 87 Pixel gesetzt"*
+- Schneller bei großen Logos: PIL rendert alles auf einmal
 
-################################################################################
+</details>
 
-######### -- v1.4.0 -- #########
+---
 
-###FTP und Monitor Tab 
--- Monitor — TCP-Proxy (Steuerung → PC → Drucker) + Mock-Drucker für Tests ohne echtes Gerät
--- FTP — Verbindung zum Drucker, Verzeichnis-Browser, Datei-Upload/Download, direkt im Editor öffnen
--- Geräteprofil-Auswahl (AJD / AJ5II / Test) mit vorausgefüllten FTP-Zugangsdaten
+<details>
+<summary><b>v1.5.0</b> — Neues Design · FTP-Fixes · Label/Logo Editor Erweiterungen</summary>
+
+### Design — Elegant Charcoal
+- Hintergrund `#1a1a1a`, Text `#e0e0e0`, Akzent `#5a9fd4` (Steel Blue)
+- Buttons: dunkler Hintergrund + Akzentfarbe als Text
+- Header: 2 px Akzentlinie (statt 3 px), 52 px kompakt
+- Treeview: Zeilenhöhe 24 px, flache Spaltenköpfe
+
+### FTP
+- Dateibaum-Fix: Umstellung von `ftp.dir()` auf `ftp.mlsd()` (RFC 3659), Fallback auf `ftp.nlst()`
+- Standardpasswort AJD korrigiert (`User` mit großem U)
+- FTP Timeout auf 120 s erhöht
+
+### Label Editor
+- Zähler-XML komplett auf Geräte-Format umgestellt (Child-Elemente: FORMAT, AUTOSTOP, RESETABLE, …)
+- Zähler-Properties erweitert: Format-Dropdown, Autostop, Rückstellbar, Alpha-Code, Timed Reset, …
+- Objektrahmen-Badge zeigt jetzt X Y H L
+- Dots/Pixel-Modus: neuer Toggle (Dots = Tintenpunkte als Kreise; Pixel = klassisches Rechteck)
+- Linke Seitenleiste: 185 → 215 px
+
+### Logo Editor
+- PNG speichern (transparenter Hintergrund)
+- JPG speichern (weißer Hintergrund)
+
+</details>
+
+---
+
+<details>
+<summary><b>v1.4.0</b> — FTP-Tab · Monitor-Tab · Auto-Update · Drucker-Profile · Befehlshistorie</summary>
+
+### FTP und Monitor Tab
+- Monitor: TCP-Proxy (Steuerung → PC → Drucker) + Mock-Drucker für Tests
+- FTP: Verbindung, Verzeichnis-Browser, Upload/Download, direkt im Editor öffnen
+- Geräteprofil-Auswahl (AJD / AJ5II / Test) mit vorausgefüllten FTP-Zugangsdaten
 
 ### App & Build
--- Fenster startet maximiert (Titelleiste bleibt sichtbar)
--- BUILD.bat überarbeitet — beendet laufende Instanz automatisch vor dem Build
--- update_version.py als separates Build-Hilfsskript
+- Fenster startet maximiert (Titelleiste sichtbar)
+- `BUILD.bat` überarbeitet — beendet laufende Instanz automatisch
+- `update_version.py` als separates Build-Hilfsskript
 
 ### Allgemein
--- Auto-Update beim Start (konfigurierbar, an/aus, URL einstellbar)
--- Drucker-Profile — mehrere IP/Port-Konfigurationen speichern und laden
--- Befehlshistorie — letzte 20 Befehle, per Doppelklick erneut senden
--- Auto-Ping — optionaler Hintergrund-Ping alle 30 Sekunden
--- Session-Log — jede Sitzung wird automatisch in res/logs/ gespeichert
--- Tab PrintControls hinzugefügt (.ctl-Dateien, Pfad user/config/PrintControl/)
--- Neue Schnellbefehle: BOARDINFO, BOARDINFO_EXT
+- Auto-Update beim Start (konfigurierbar, An/Aus, URL einstellbar)
+- Drucker-Profile: mehrere IP/Port-Konfigurationen speichern und laden
+- Befehlshistorie: letzte 20 Befehle, per Doppelklick erneut senden
+- Auto-Ping: optionaler Hintergrund-Ping alle 30 Sekunden
+- Session-Log: automatisch in `res/logs/` gespeichert
+- Tab PrintControls hinzugefügt (`.ctl`-Dateien)
+- Neue Schnellbefehle: `BOARDINFO`, `BOARDINFO_EXT`
 
 ### PrintModes
--- pm05 (5 px) hinzugefügt
--- pm07 (7 px) hinzugefügt
--- pm48 (48 px) hinzugefügt
+- `pm05` (5 px), `pm07` (7 px), `pm48` (48 px) hinzugefügt
 
 ### Label Editor — Fixes
--- Objektbreite korrigiert — Bounding Box passt nun zur tatsächlichen Textbreite
--- MAG 2×/3×/4× — Text wird nur noch horizontal gestreckt, Höhe bleibt korrekt
--- Linie / Rechteck / Ellipse — Koordinaten und Bounding Box korrigiert, schwarz eingefärbt
--- Properties-Panel — Mausrad funktioniert überall, nicht nur auf der Scrollleiste
--- Y-Koordinate — unterster Pixel wird nicht mehr von der Rahmenlinie verdeckt
--- DMC-Hintergrund — transparent (weiße Pixel werden nicht gedruckt)
--- Beim Laden bereits erstellter Labels wurde der Objektrahmen falsch angezeigt
--- NEG=1 Objekte (schwarze Hintergrundboxen) werden aus der Kollisionserkennung ausgeschlossen
--- Proportionale Schriften (Arial, Tunga, Latha) — Rahmen wird mit echter tkinter-Rendering-Breite gemessen
+- Objektbreite korrigiert (Bounding Box passt zur tatsächlichen Textbreite)
+- MAG 2×/3×/4×: Text wird nur noch horizontal gestreckt
+- Linie / Rechteck / Ellipse: Koordinaten und Bounding Box korrigiert
+- NEG=1 Objekte aus Kollisionserkennung ausgeschlossen
+- Proportionale Schriften: Rahmen mit echter tkinter-Rendering-Breite gemessen
 
 ### Label Editor — Neue Features
--- Undo / Redo (50 Schritte) — Strg+Z / Strg+Y / Buttons ↶ ↷ in der Toolbar
--- Tastenkürzel: Entf = Objekt löschen, Backspace = Undo, Pfeiltasten = verschieben
--- Zoom bis 32× (war max 8×)
--- Mausrad im Canvas: scrollen, Shift = horizontal, Strg = Zoom
--- Kollisions-Erkennung — überlappende Objekte werden orange markiert
--- Resize-Handle — oranges Quadrat oben rechts am Objekt, ziehen = Breite ändern
--- Drehung — Winkel-Eingabe + Buttons ↺ ↷ 0° im Panel und in Operationen
--- Duplizieren, Spiegeln, Ausrichten, Zentrieren als Operationen-Buttons
--- Logo-Objekt — neuer Objekttyp im Label Editor (Dateiname, Breite, Höhe)
--- Zähler — neue Quelle-Auswahl im Properties-Panel
--- Eigener Zähler → NUMB (Start, Ende, Schritt, Stellen)
--- Produktzähler → TEXT #PCNT
--- Globaler Zähler → TEXT #GCNT
--- Vorschau-Wert für Editor-Anzeige einstellbar
+- Undo / Redo (50 Schritte) — `Strg+Z` / `Strg+Y`
+- Tastenkürzel: `Entf`, Pfeiltasten, `Strg+Mausrad`
+- Zoom bis 32×
+- Kollisionserkennung (überlappende Objekte → orange markiert)
+- Resize-Handle (oranges Quadrat oben rechts)
+- Drehung, Duplizieren, Spiegeln, Ausrichten, Zentrieren
+- Logo-Objekt als neuer Objekttyp
+- Zähler: Eigener Zähler (NUMB), Produktzähler (#PCNT), Globaler Zähler (#GCNT)
 
 ### Logo Editor
--- Hintergrund transparent (weiße Pixel = nicht gedruckt)
--- PNG speichern — neu, transparenter Hintergrund
--- WebP speichern — neu, transparenter Hintergrund
--- Ordner res/logos/ wird automatisch angelegt
--- Laden und Speichern öffnen standardmäßig res/logos/
+- PNG und WebP speichern (transparenter Hintergrund)
+- `res/logos/` wird automatisch angelegt
 
-################################################################################
+</details>
 
-######### -- v1.3.0 -- #########
+---
+
+<details>
+<summary><b>v1.3.0</b> — Dark-Theme · Label Editor Basis · About-Dialog</summary>
 
 ### App & Build
--- Dark-Theme mit Catppuccin-Farbpalette
--- Uhr + IP-Anzeige im Header
--- About-Dialog mit Tastenkürzel-Übersicht
--- Automatische Combobox-Styles (dunkler Hintergrund)
+- Dark-Theme mit Catppuccin-Farbpalette
+- Uhr + IP-Anzeige im Header
+- About-Dialog mit Tastenkürzel-Übersicht
 
 ### Label Editor
--- Pixel-genaue Font-Darstellung mit geladenen TTF-Druckerfonts
--- Y=0 = Unterkante (Drucker-Koordinatensystem)
--- Zoom 1×–8×, Hintergrund-Raster wählbar
--- Objekt-Typen: Text, Datum/Zeit, Zähler, DMC, Barcode/QR, Linie, Rechteck, Logo
--- Drag & Drop zum Verschieben
--- Feld-Typ: Statisch / Datenfeld / Prompted
--- Datenfeld ohne Platzhalter → rot hervorgehoben
--- Properties-Panel mit allen Objekt-Eigenschaften
--- XML-Vorschau live (ein-/ausklappbar)
--- Speichern / Laden / An Drucker senden
+- Pixel-genaue Font-Darstellung mit geladenen TTF-Druckerfonts
+- Y=0 = Unterkante (Drucker-Koordinatensystem)
+- Zoom 1×–8×, Hintergrund-Raster wählbar
+- Objekt-Typen: Text, Datum/Zeit, Zähler, DMC, Barcode/QR, Linie, Rechteck, Logo
+- Drag & Drop zum Verschieben
+- Properties-Panel mit allen Objekt-Eigenschaften
+- XML-Vorschau live (ein-/ausklappbar)
 
-### Sonstige Tabs
--- Labels — Dateiverwaltung
--- Configs — .pcf-Dateien
+</details>
 
-################################################################################
+---
 
-######### -- v1.2.0 -- #########
+<details>
+<summary><b>v1.2.0</b> — Label Editor & Logo Editor (erste Versionen)</summary>
 
-### Label Editor (erste Version)
--- Visueller Label-Editor als eigener Tab
--- Objekte per Klick hinzufügen: Text, Datum/Zeit, Zähler, DMC, Barcode/QR, Linie, Rechteck
--- Koordinaten-System: Y=0 = Unterkante (Drucker-Standard)
--- Label direkt aus dem Editor an Drucker senden
+### Label Editor
+- Visueller Label-Editor als eigener Tab
+- Objekte per Klick hinzufügen: Text, Datum/Zeit, Zähler, DMC, Barcode/QR, Linie, Rechteck
+- Label direkt aus dem Editor an Drucker senden
 
-### Logo Editor (erste Version)
--- Paint-ähnlicher Pixel-Editor als eigener Tab
--- Größe frei wählbar (B × H in Pixeln)
--- Werkzeuge: Stift, Radierer, Füllen, Linie, Rechteck
--- Speichern als SVG, Laden von SVG/MLG/PNG/BMP
+### Logo Editor
+- Paint-ähnlicher Pixel-Editor als eigener Tab
+- Größe frei wählbar (B × H in Pixeln)
+- Werkzeuge: Stift, Radierer, Füllen, Linie, Rechteck
+- Speichern als SVG; Laden von SVG / MLG / PNG / BMP
 
-################################################################################
+</details>
 
-######### -- v1.1.0 -- #########
+---
+
+<details>
+<summary><b>v1.1.0</b> — Labels · Configs · PrintControls · Funktionen-Tab</summary>
 
 ### Neue Tabs
--- Labels — lokale Label-Dateien (.txt, .xml, .gp) verwalten, auf Drucker laden/speichern (SAVELAB, LOADLAB)
--- Configs — Konfigurations-Dateien (.pcf) verwalten, auf Drucker übertragen (LOADCONFIG)
--- PrintControls — .ctl-Dateien, Pfad user/config/PrintControl/ auf dem Drucker
--- Funktionen — eigene G-PRINT XML-Befehle speichern und wiederverwenden
+- **Labels** — lokale Label-Dateien verwalten, auf Drucker laden/speichern (`SAVELAB`, `LOADLAB`)
+- **Configs** — Konfigurations-Dateien verwalten und übertragen (`LOADCONFIG`)
+- **PrintControls** — `.ctl`-Dateien, Pfad `user/config/PrintControl/`
+- **Funktionen** — eigene G-PRINT XML-Befehle speichern und wiederverwenden
 
 ### Netzwerk
--- Subnetz-Prüfung (PC und Drucker im gleichen Netz?)
+- Subnetz-Prüfung (PC und Drucker im gleichen Netz?)
 
-################################################################################
+</details>
 
-######### -- v1.0.0 -- #########
+---
+
+<details>
+<summary><b>v1.0.0</b> — Erstveröffentlichung</summary>
 
 ### Grundfunktionen
--- Verbindung zum alphaJET per TCP/IP (G-PRINT Protokoll)
--- Netzwerk-Tab — IP, Port, Subnetz, Gateway, Name, Timeout konfigurieren
--- Befehle-Tab — Schnellbefehle + freier XML-Befehl-Editor
--- Kommunikations-Log mit Zeitstempel (ein-/ausklappbar, Größe wählbar)
--- Konfiguration wird lokal gespeichert (res/config.json)
--- START.bat prüft Python-Installation und zeigt Fehlermeldungen
+- Verbindung zum alphaJET per TCP/IP (G-PRINT Protokoll)
+- Netzwerk-Tab: IP, Port, Subnetz, Gateway, Name, Timeout konfigurieren
+- Befehle-Tab: Schnellbefehle + freier XML-Befehl-Editor
+- Kommunikations-Log mit Zeitstempel (ein-/ausklappbar)
+- Konfiguration wird lokal gespeichert (`res/config.json`)
+- `START.bat` prüft Python-Installation
 
-################################################################################
+</details>
+
+---
+
+<div align="center">
+
+**alphaJET Interface-Tool**  
+Marvin Köllner · Koenig & Bauer Coding  
+*Nur zur internen Verwendung · Vertraulich*
+
+</div>
