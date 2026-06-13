@@ -1,4 +1,4 @@
-| [📋 Benutzerhandbuch](README.md) | [🔒 Security](SECURITY.md) | [📝 Changelog](CHANGELOG.md) | [📦 Requirements](requirements.txt) |
+[![Benutzerhandbuch](https://img.shields.io/badge/📋-Benutzerhandbuch-blue?style=flat-square)](README.md) [![Security](https://img.shields.io/badge/🔒-Security-red?style=flat-square)](SECURITY.md) [![Changelog](https://img.shields.io/badge/📝-Changelog-green?style=flat-square)](CHANGELOG.md) [![Requirements](https://img.shields.io/badge/📦-Requirements-orange?style=flat-square)](requirements.txt)
 |:---:|:---:|:---:|:---:|
 # alphaJET Interface-Tool — Benutzerhandbuch
 
