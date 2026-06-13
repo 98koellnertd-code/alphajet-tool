@@ -1,4 +1,4 @@
-[![Benutzerhandbuch](https://img.shields.io/badge/📋_Benutzerhandbuch-555555?style=flat-square)](README.md) [![Security](https://img.shields.io/badge/🔒_Security-555555?style=flat-square)](SECURITY.md) [![Changelog](https://img.shields.io/badge/📝_Changelog-555555?style=flat-square)](CHANGELOG.md) [![Requirements](https://img.shields.io/badge/📦_Requirements-555555?style=flat-square)](requirements.txt)
+[![Benutzerhandbuch](https://img.shields.io/badge/📋_Benutzerhandbuch-1a3a5c?style=flat-square)](README.md) [![Security](https://img.shields.io/badge/🔒_Security-1a3a5c?style=flat-square)](SECURITY.md) [![Changelog](https://img.shields.io/badge/📝_Changelog-1a3a5c?style=flat-square)](CHANGELOG.md) [![Requirements](https://img.shields.io/badge/📦_Requirements-1a3a5c?style=flat-square)](requirements.txt)
 # alphaJET Interface-Tool — Changelog
 
 > Versionshistorie des internen Servicetechniker-Tools für Koenig & Bauer alphaJET CIJ-Drucker.
