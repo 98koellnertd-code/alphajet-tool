@@ -1,0 +1,54 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.4",
+  "version": 1,
+  "serialNumber": "urn:uuid:alphajet-interfacetool-2.1.1",
+  "metadata": {
+    "timestamp": "2026-06-12T00:00:00Z",
+    "tools": [{ "name": "manual" }],
+    "component": {
+      "type": "application",
+      "name": "alphaJET-InterfaceTool",
+      "version": "2.1.1",
+      "description": "K&B alphaJET Servicetechniker Tool – G-PRINT XML / TCP",
+      "licenses": [{ "license": { "name": "Proprietary" } }]
+    }
+  },
+  "components": [
+    {
+      "type": "library",
+      "name": "Pillow",
+      "version": "12.2.0",
+      "purl": "pkg:pypi/pillow@12.2.0",
+      "description": "Python Imaging Library – Bilddateien im Label/Logo Editor"
+    },
+    {
+      "type": "library",
+      "name": "openpyxl",
+      "version": "3.1.5",
+      "purl": "pkg:pypi/openpyxl@3.1.5",
+      "description": "Excel-Export für AZ & Reisekosten"
+    },
+    {
+      "type": "library",
+      "name": "pyftpdlib",
+      "version": "2.2.0",
+      "purl": "pkg:pypi/pyftpdlib@2.2.0",
+      "description": "Mock-FTP-Server im Monitor-Tab (Testbetrieb)"
+    },
+    {
+      "type": "framework",
+      "name": "Python",
+      "version": "3.12.10",
+      "purl": "pkg:generic/python@3.12.10",
+      "description": "Laufzeitumgebung"
+    },
+    {
+      "type": "library",
+      "name": "tkinter",
+      "version": "3.12.10",
+      "purl": "pkg:generic/tkinter@3.12.10",
+      "description": "GUI-Framework (Python-Standardbibliothek)"
+    }
+  ]
+}
