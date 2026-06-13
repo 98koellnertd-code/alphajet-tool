@@ -1,3 +1,4 @@
+[📋 Changelog](CHANGELOG.md)
 # alphaJET Interface-Tool — Benutzerhandbuch
 
 > **Internes Servicetechniker-Tool** zur Fernsteuerung und Konfiguration von Koenig & Bauer alphaJET CIJ-Druckern über das G-PR(INT)-Protokoll (TCP/IP).
