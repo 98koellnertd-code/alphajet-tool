@@ -1,10 +1,14 @@
 # Security Policy — alphaJET Interface Tool
+
 > **Internes Servicetechniker-Tool** zur Fernsteuerung und Konfiguration von Koenig & Bauer alphaJET CIJ-Druckern über das G-PR(INT)-Protokoll (TCP/IP).
-![Version](https://img.shields.io/badge/Version-2.x.x-brightgreen)
+
+![Version](https://img.shields.io/badge/Version-2.1.3-brightgreen)
 ![Platform](https://img.shields.io/badge/Platform-Windows%2010%20%2F%2011-blue)
 ![Protocol](https://img.shields.io/badge/Protokoll-G--PR(INT)%20V3.0.0-orange)
 ![Python](https://img.shields.io/badge/Python-3.11%2B-yellow)
 ![Internal](https://img.shields.io/badge/Verwendung-Intern%20%2F%20Vertraulich-red)
+
+---
 
 Dieses Dokument beschreibt den Umgang mit Sicherheitsschwachstellen im Rahmen der
 Anforderungen des EU Cyber Resilience Act (CRA, Verordnung 2024/2847).
