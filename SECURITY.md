@@ -11,9 +11,6 @@
 
 ---
 
-Dieses Dokument beschreibt den Umgang mit Sicherheitsschwachstellen im Rahmen der
-Anforderungen des EU Cyber Resilience Act (CRA, Verordnung 2024/2847).
-
 ## Unterstützte Versionen
 
 | Version | Sicherheits-Updates |
