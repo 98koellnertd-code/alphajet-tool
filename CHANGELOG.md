@@ -44,7 +44,7 @@ Dieses Dokument enthält alle Anpassungen seit Version v.1.0.0
 #### Sonstige Dateien
 | Datei | Änderung |
 |---|---|
-| `requirements.txt` | `reportlab` (nie benutzt) entfernt; `pyftpdlib` ergänzt |
+| `requirements.txt` | `reportlab` entfernt; `pyftpdlib` ergänzt |
 | `BUILD.bat` | `reportlab`-Check und `--collect-all "reportlab"` entfernt |
 | `SECURITY.md` | Vulnerability Disclosure Policy (CRA Art. 13/14): Meldeweg, Reaktionszeiten, bekannte Risiken (FTP), implementierte Maßnahmen |
 | `sbom.json` | Software Bill of Materials im CycloneDX 1.4 Format (CRA Annex I, Part II) |
