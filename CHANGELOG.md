@@ -27,25 +27,18 @@
 
 ### App-Icon
 - App-Icon wird jetzt permanent und korrekt in der Windows-Taskleiste angezeigt
-- Neue `_set_app_icon()`-Funktion deckt alle drei Windows-Icon-Pfade ab:
 
-| Methode | Wirkung |
+| Datei | Änderung |
 |---|---|
-| `iconbitmap()` | Setzt das Klassen-Icon |
-| `WM_SETICON` | Setzt `WM_GETICON` (groß + klein) |
-| `SetClassLongPtr` | Erzwingt das Klassen-Icon zusätzlich |
+| `BUILD.bat` | `--add-data "icon.ico;."` ergänzt |
+| `utils.py` | `ICON_FILE` löst Pfad in `.exe` + Quelle auf |
+| `tool.py` | `_set_app_icon` nutzt `ICON_FILE`; Icon via `iconbitmap` + `WM_SETICON` + Klassen-Icon |
 
-- `iconphoto` und AUMID entfernt (hatten das Klassen-Icon nicht gesetzt → Taskleiste zeigte altes Feder-Icon)
-- Alle drei Pfade per Pixel-Test verifiziert
-
-> 💡 **Hinweis:** Windows cached Icons aggressiv. Falls das alte Icon noch erscheint, einmalig folgenden CMD-Befehl ausführen:
-> ```bat
-> taskkill /f /im explorer.exe
-> del /a /q "%localappdata%\IconCache.db"
-> del /a /q "%localappdata%\Microsoft\Windows\Explorer\iconcache*"
-> del /a /q "%localappdata%\Microsoft\Windows\Explorer\thumbcache*"
-> start explorer.exe
-> ```
+> 💡 **Hintergrund:** Am Ende war es eine Kette aus mehreren unabhängigen Problemen:
+> 1. Rahmenloses Fenster ohne `overrideredirect` (ctypes auf dem Wrapper-HWND)
+> 2. Taskleiste sichtbar durch Work-Area statt `zoomed`
+> 3. Icon-Mechanismus (`iconbitmap` + `WM_SETICON` + Klassen-Icon statt `iconphoto`)
+> 4. **Der eigentliche Killer:** `icon.ico` war nie ins `.exe`-Bundle gepackt → zur Laufzeit nicht gefunden
 
 ---
 
@@ -77,7 +70,7 @@
 | `BUILD.bat` | `reportlab`-Check und `--collect-all "reportlab"` entfernt |
 | `SECURITY.md` | Vulnerability Disclosure Policy (CRA Art. 13/14): Meldeweg, Reaktionszeiten, bekannte Risiken (FTP), implementierte Maßnahmen |
 | `sbom.json` | Software Bill of Materials im CycloneDX 1.4 Format (CRA Annex I, Part II) |
-| `version.json` | SHA-256-Feld ergänzt |
+| version.json | SHA-256-Prüfsumme ergänzt — vor dem Installieren eines Updates wird der Hash der heruntergeladenen Datei gegen den Wert in version.json geprüft; bei Abweichung wird der Download abgebrochen (Schutz vor manipulierten oder beschädigten Dateien) |
 
 ### Security Audit (OP-01 bis OP-04)
 
