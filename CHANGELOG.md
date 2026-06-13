@@ -2,15 +2,13 @@
 
 > Versionshistorie des internen Servicetechniker-Tools für Koenig & Bauer alphaJET CIJ-Drucker.
 
-![Version](https://img.shields.io/badge/Version-2.1.2-brightgreen)
+![Version](https://img.shields.io/badge/Version-2.1.3-brightgreen)
 ![Platform](https://img.shields.io/badge/Platform-Windows%2010%20%2F%2011-blue)
 ![Protocol](https://img.shields.io/badge/Protokoll-G--PR(INT)%20V3.0.0-orange)
 ![Python](https://img.shields.io/badge/Python-3.11%2B-yellow)
 ![Internal](https://img.shields.io/badge/Verwendung-Intern%20%2F%20Vertraulich-red)
 
 ---
-
-Dieses Dokument enthält alle Anpassungen seit Version v.1.0.0
 
 <!--
 ################################################################################
@@ -21,7 +19,38 @@ Dieses Dokument enthält alle Anpassungen seit Version v.1.0.0
 
 ###LATEST CHANGES###
 
-######### -- v2.1.2 -- #########
+######### -- v2.1.3 -- #########
+
+### Themes
+- Themes (`forest-dark.tcl` / `forest-light.tcl`) sind jetzt direkt in der `.exe` eingebettet — keine lokalen Theme-Dateien mehr notwendig
+- `res/themes/`-Ordner wird nicht mehr benötigt und kann entfernt werden
+
+### App-Icon
+- App-Icon wird jetzt permanent und korrekt in der Windows-Taskleiste angezeigt
+- Neue `_set_app_icon()`-Funktion deckt alle drei Windows-Icon-Pfade ab:
+
+| Methode | Wirkung |
+|---|---|
+| `iconbitmap()` | Setzt das Klassen-Icon |
+| `WM_SETICON` | Setzt `WM_GETICON` (groß + klein) |
+| `SetClassLongPtr` | Erzwingt das Klassen-Icon zusätzlich |
+
+- `iconphoto` und AUMID entfernt (hatten das Klassen-Icon nicht gesetzt → Taskleiste zeigte altes Feder-Icon)
+- Alle drei Pfade per Pixel-Test verifiziert
+
+> 💡 **Hinweis:** Windows cached Icons aggressiv. Falls das alte Icon noch erscheint, einmalig folgenden CMD-Befehl ausführen:
+> ```bat
+> taskkill /f /im explorer.exe
+> del /a /q "%localappdata%\IconCache.db"
+> del /a /q "%localappdata%\Microsoft\Windows\Explorer\iconcache*"
+> del /a /q "%localappdata%\Microsoft\Windows\Explorer\thumbcache*"
+> start explorer.exe
+> ```
+
+---
+
+<details>
+<summary><b>v2.1.2</b> — CRA-Anpassungen · Security Audit</summary>
 
 ### CRA-Anpassungen
 #### `utils.py`
@@ -44,7 +73,7 @@ Dieses Dokument enthält alle Anpassungen seit Version v.1.0.0
 #### Sonstige Dateien
 | Datei | Änderung |
 |---|---|
-| `requirements.txt` | `reportlab` entfernt; `pyftpdlib` ergänzt |
+| `requirements.txt` | `reportlab` (nie benutzt) entfernt; `pyftpdlib` ergänzt |
 | `BUILD.bat` | `reportlab`-Check und `--collect-all "reportlab"` entfernt |
 | `SECURITY.md` | Vulnerability Disclosure Policy (CRA Art. 13/14): Meldeweg, Reaktionszeiten, bekannte Risiken (FTP), implementierte Maßnahmen |
 | `sbom.json` | Software Bill of Materials im CycloneDX 1.4 Format (CRA Annex I, Part II) |
@@ -58,6 +87,8 @@ Dieses Dokument enthält alle Anpassungen seit Version v.1.0.0
 | OP-02 | `utils.py`, `tool.py`, `az_reisekosten.py` | `utils.sanitize_error(e)` kürzt absolute Windows/POSIX-Pfade auf Dateinamen; verwendet in `_file_import()`, `do_download()` und Excel-Fehlerdialogen |
 | OP-03 | `BUILD.bat` | Auto-install von `pip-audit` falls fehlend, dann `pip_audit --requirement requirements.txt` vor PyInstaller |
 | OP-04 | `SECURITY.md` | Abschnitt „Geräte-Standardpasswörter" um Schritt-für-Schritt-Anleitung und vollständige `ftp_credentials.json`-Struktur erweitert |
+
+</details>
 
 ---
 
