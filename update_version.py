@@ -12,31 +12,6 @@ with open("tool.py", encoding="utf-8") as f:
             version = line.split("=", 1)[1].strip().strip('"').strip("'")
             break
 
-# ── CHANGELOG.md ──────────────────────────────────────────────────────────────
-notes = ""
-if os.path.exists("CHANGELOG.md"):
-    with open("CHANGELOG.md", encoding="utf-8") as f:
-        content = f.read()
-
-    # "neuste Version" Banner-Zeile aktualisieren
-    content = re.sub(
-        r"(-- neuste Version )v[\d.]+( --)",
-        rf"\g<1>v{version}\2",
-        content
-    )
-
-    with open("CHANGELOG.md", "w", encoding="utf-8") as f:
-        f.write(content)
-    print(f"  CHANGELOG.md aktualisiert: v{version}")
-
-    # ###LATEST CHANGES### Abschnitt → notes für den Update-Dialog
-    match = re.search(
-        r"###LATEST CHANGES###\s*\n(.*?)(?=\n#{10,})",
-        content, re.DOTALL
-    )
-    if match:
-        notes = match.group(1).strip()
-
 # ── version.json ──────────────────────────────────────────────────────────────
 data = {}
 if os.path.exists("version.json"):
