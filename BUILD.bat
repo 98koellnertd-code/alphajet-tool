@@ -66,6 +66,7 @@ python -m PyInstaller ^
     --windowed ^
     --icon "icon.ico" ^
     --name "alphaJet-InterfaceTool" ^
+    --add-data "icon.ico;." ^
     --add-data "fonts;fonts" ^
     --add-data "res;res" ^
     --hidden-import "PIL" ^
