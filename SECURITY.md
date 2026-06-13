@@ -1,6 +1,5 @@
 # Security Policy — alphaJET Interface Tool
-
-
+> **Internes Servicetechniker-Tool** zur Fernsteuerung und Konfiguration von Koenig & Bauer alphaJET CIJ-Druckern über das G-PR(INT)-Protokoll (TCP/IP).
 ![Version](https://img.shields.io/badge/Version-2.x.x-brightgreen)
 ![Platform](https://img.shields.io/badge/Platform-Windows%2010%20%2F%2011-blue)
 ![Protocol](https://img.shields.io/badge/Protokoll-G--PR(INT)%20V3.0.0-orange)
