@@ -8,11 +8,12 @@ Version:	2.1.1
 Protokoll:	G-PR(INT) V3.0.0 · TCP/IP · XML 1.0
 Plattform:	Windows 10 / 11 (64-bit)
 Datum:	12.06.2026
-Autor:	Marvin Köllner · König & Bauer Coding
+Autor:	Marvin Köllner · Koenig & Bauer Coding
 
 Nur zur internen Verwendung · Vertraulich
  
 Abhängigkeiten & SBOM
+
 Nachfolgende Tabelle listet alle Softwarekomponenten (Software Bill of Materials gemäß Annex I CRA).
 
 Komponente	Version	Typ	Verwendung
@@ -30,6 +31,7 @@ forest-dark.tcl	–	Theme-Asset	Visuelles Design (Dark Mode)
 forest-light.tcl	–	Theme-Asset	Visuelles Design (Light Mode, neu v2.x)
 
 Hinweis:
+
 reportlab und CustomTkinter wurden mit v2.0 entfernt. Grafiken werden ausschließlich über Pillow realisiert; das GUI-Framework ist jetzt tkinter/ttk.
  
 Inhaltsverzeichnis
@@ -54,7 +56,8 @@ Inhaltsverzeichnis
 19.  Fehlerbehebung
  
 1. Übersicht
-Das alphaJET Interface-Tool ist ein internes Servicetechniker-Programm zur Fernsteuerung und Konfiguration von König & Bauer alphaJET CIJ-Druckern über das G-PR(INT) Protokoll (TCP/IP).
+
+Das alphaJET Interface-Tool ist ein internes Servicetechniker-Programm zur Fernsteuerung und Konfiguration von Koenig & Bauer alphaJET CIJ-Druckern über das G-PR(INT) Protokoll (TCP/IP).
 
 Funktionsumfang
 Bereich	Funktion
