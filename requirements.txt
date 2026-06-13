@@ -1,4 +1,0 @@
-pillow
-openpyxl
-pyftpdlib
-pyinstaller
